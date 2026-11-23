@@ -4,11 +4,10 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
-TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
-# Твой найденный ключ NIM
-NVIDIA_KEY = os.getenv("NVIDIA_KEY", "SxgaOnbaZhPdd1ODjMdwEBgEZgZCDa2h")
+TG_TOKEN = "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts"
+# Жестко зашиваем твой ключ сюда, чтобы избежать проблем с кодировкой в env
+NVIDIA_KEY = "SxgaOnbaZhPdd1ODjMdwEBgEZgZCDa2h"
 
-# Клиент настроен на эндпоинт NVIDIA NIM
 client = OpenAI(
     api_key=NVIDIA_KEY,
     base_url="https://integrate.api.nvidia.com/v1"
@@ -24,7 +23,6 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            # Модель из каталога NVIDIA NIM (например, Llama 3 или другая доступная)
             model="meta/llama-3.1-70b-instruct",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
@@ -35,7 +33,7 @@ async def get_ai_reply(text: str) -> str:
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"Бля, ошибка NVIDIA NIM API: {e}"
+        return f"Бля, ошибка API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
