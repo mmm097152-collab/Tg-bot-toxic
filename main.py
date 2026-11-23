@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types, F
 from google import genai
 
 TG_TOKEN = os.getenv("TG_TOKEN", "8681915427:AAGoMZL7XN6Xl6YIlNIl6aS9MJEiQGYVeRk")
-GEMINI_KEY = os.getenv("GEMINI_KEY", "AIzaSyAQAb8RN6JLvcriGD-tuftXqUFZaK9eZjaQkloCsqmfT13L0qo2zQ")
+GEMINI_KEY = os.getenv("GEMINI_KEY", "AQ.Ab8RN6J6JJV_30CZovb88j-px9JqziU-x5MixmxOB_7nHpTKyA")
 
 ai_client = genai.Client(api_key=GEMINI_KEY)
 
@@ -18,7 +18,6 @@ SYSTEM_PROMPT = """
 
 async def get_ai_reply(text: str) -> str:
     try:
-        # Используем официальный нативный вызов Gemini
         response = ai_client.models.generate_content(
             model='gemini-2.5-flash',
             contents=text,
