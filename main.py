@@ -4,13 +4,14 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from openai import AsyncOpenAI
 
-# Ключи подтягиваются с сервера Render, а если запускаешь локально — подставятся твои
+# Безопасно подтягиваем токены (с сервера Render или со значениями по умолчанию)
 TG_TOKEN = os.getenv("TG_TOKEN", "8681915427:AAGoMZL7XN6Xl6YIlNIl6aS9MJEiQGYVeRk")
-DEEPSEEK_KEY = os.getenv("DEEPSEEK_KEY", "sk-30856eed715d4ded97050cd394c987fc")
+GROQ_KEY = os.getenv("GROQ_KEY", "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")
 
+# Инициализируем Groq API (полностью бесплатные быстрые модели)
 ai_client = AsyncOpenAI(
-    base_url="https://api.deepseek.com",
-    api_key=DEEPSEEK_KEY
+    base_url="https://api.groq.com/openai/v1",
+    api_key=GROQ_KEY
 )
 
 SYSTEM_PROMPT = """
@@ -23,7 +24,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = await ai_client.chat.completions.create(
-            model="deepseek-chat",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
@@ -64,4 +65,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-  
+    
