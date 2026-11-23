@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types, F
 from google import genai
 
 TG_TOKEN = os.getenv("TG_TOKEN", "8681915427:AAGoMZL7XN6Xl6YIlNIl6aS9MJEiQGYVeRk")
-GEMINI_KEY = os.getenv("GEMINI_KEY", "AIzaSyAQ.Ab8RN6JLvcriGD-tuftXqUFZaK9eZjaQkloCsqmfT13L0qo2zQ")
+GEMINI_KEY = os.getenv("GEMINI_KEY", "AIzaSyAQAb8RN6JLvcriGD-tuftXqUFZaK9eZjaQkloCsqmfT13L0qo2zQ")
 
 ai_client = genai.Client(api_key=GEMINI_KEY)
 
