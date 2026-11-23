@@ -4,7 +4,7 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from google import genai
 
-TG_TOKEN = os.getenv("TG_TOKEN", "8681915427:AAGoMZL7XN6Xl6YIlNIl6aS9MJEiQGYVeRk")
+TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
 GEMINI_KEY = os.getenv("GEMINI_KEY", "AQ.Ab8RN6J6JJV_30CZovb88j-px9JqziU-x5MixmxOB_7nHpTKyA")
 
 ai_client = genai.Client(api_key=GEMINI_KEY)
@@ -19,7 +19,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = ai_client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.0-flash',
             contents=text,
             config={
                 'system_instruction': SYSTEM_PROMPT,
