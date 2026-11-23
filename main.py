@@ -7,6 +7,7 @@ from openai import OpenAI
 TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
 GROQ_KEY = os.getenv("GROQ_KEY", "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")
 
+# Клиент настроен на Groq с полным префиксом модели
 client = OpenAI(
     api_key=GROQ_KEY,
     base_url="https://api.groq.com/openai/v1"
@@ -22,8 +23,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            # Точное имя модели из твоей панели Groq
-            model="gpt-oss-20b",
+            model="qwen/qwen-3.8-27b",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
