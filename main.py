@@ -4,9 +4,9 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
-TG_TOKEN = "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts"
-# Твой рабочий бесплатный ключ Groq
-GROQ_KEY = "Gsk_i6IjDwiJw3l2IuDXpEVHWGdyb3FYQNU834OHcRufvwoxqDPeZJqF"
+TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
+# Берём ключ из переменных Render, а если его там нет — подставляем твой рабочий
+GROQ_KEY = os.getenv("GROQ_KEY", "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")
 
 client = OpenAI(
     api_key=GROQ_KEY,
