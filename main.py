@@ -19,7 +19,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = ai_client.models.generate_content(
-            model='gemini-3.8-flash',
+            model='gemini-1.5-flash',
             contents=text,
             config={
                 'system_instruction': SYSTEM_PROMPT,
@@ -60,5 +60,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
     
