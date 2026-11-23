@@ -22,8 +22,8 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            # Меняем на легкую и стопроцентно доступную модель Groq
-            model="llama-3.1-8b-instant",
+            # Точное имя модели из твоей панели Groq
+            model="gpt-oss-20b",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
