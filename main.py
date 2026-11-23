@@ -5,7 +5,6 @@ from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
 TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
-# Берём ключ из переменных Render, а если его там нет — подставляем твой рабочий
 GROQ_KEY = os.getenv("GROQ_KEY", "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")
 
 client = OpenAI(
@@ -23,7 +22,8 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            # Меняем на легкую и стопроцентно доступную модель Groq
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
