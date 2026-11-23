@@ -17,30 +17,29 @@ SYSTEM_PROMPT = """
 """
 
 async def get_ai_reply(text: str) -> str:
-    try:
-        # Автоматически ищем любую доступную модель генерации текста на твоем ключе
-        available_models = []
-        for m in ai_client.models.list():
-            if "generateContent" in m.supported_generation_methods:
-                available_models.append(m.name)
-        
-        # Если нашли — берем первую попавшуюся рабочую
-        target_model = available_models[0] if available_models else 'gemini-1.5-flash'
-        # Убираем префикс models/, если он есть в названии
-        if target_model.startswith("models/"):
-            target_model = target_model.replace("models/", "")
-
-        response = ai_client.models.generate_content(
-            model=target_model,
-            contents=text,
-            config={
-                'system_instruction': SYSTEM_PROMPT,
-                'temperature': 1.2,
-            }
-        )
-        return response.text
-    except Exception as e:
-        return f"Бля, ошибка API: {e}"
+    # Перебираем актуальные рабочие модели от Google
+    models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
+    
+    last_error = ""
+    for model_name in models_to_try:
+        try:
+            response = ai_client.models.generate_content(
+                model=model_name,
+                contents=text,
+                config={
+                    'system_instruction': SYSTEM_PROMPT,
+                    'temperature': 1.2,
+                }
+            )
+            return response.text
+        except Exception as e:
+            last_error = str(e)
+            if "503" in str(e):
+                await asyncio.sleep(1)
+                continue
+            continue
+            
+    return f"Бля, ошибка API: {last_error}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
@@ -72,4 +71,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
     
