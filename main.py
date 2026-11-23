@@ -2,12 +2,17 @@ import os
 import asyncio
 from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
-from google import genai
+from openai import OpenAI
 
 TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
-GEMINI_KEY = os.getenv("GEMINI_KEY", "AQ.Ab8RN6J6JJV_30CZovb88j-px9JqziU-x5MixmxOB_7nHpTKyA")
+# Сюда вставишь свой ключ от DashScope (Qwen)
+QWEN_KEY = os.getenv("QWEN_KEY", "ТВОЙ_КЛЮЧ_QWEN")
 
-ai_client = genai.Client(api_key=GEMINI_KEY)
+# Инициализируем клиент Qwen через их эндпоинт
+client = OpenAI(
+    api_key=QWEN_KEY,
+    base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+)
 
 SYSTEM_PROMPT = """
 Ты — максимально токсичный, циничный и саркастичный кореш из дискорда. 
@@ -18,17 +23,17 @@ SYSTEM_PROMPT = """
 
 async def get_ai_reply(text: str) -> str:
     try:
-        response = ai_client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=text,
-            config={
-                'system_instruction': SYSTEM_PROMPT,
-                'temperature': 1.2,
-            }
+        response = client.chat.completions.create(
+            model="qwen-max", # Или qwen-plus / qwen-turbo
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": text}
+            ],
+            temperature=1.2,
         )
-        return response.text
+        return response.choices[0].message.content
     except Exception as e:
-        return f"Бля, ошибка API: {e}"
+        return f"Бля, ошибка Qwen API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
@@ -60,5 +65,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
     
