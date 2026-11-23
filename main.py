@@ -2,34 +2,32 @@ import os
 import asyncio
 from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
-from openai import AsyncOpenAI
+from google import genai
 
 TG_TOKEN = os.getenv("TG_TOKEN", "8681915427:AAGoMZL7XN6Xl6YIlNIl6aS9MJEiQGYVeRk")
 GEMINI_KEY = os.getenv("GEMINI_KEY", "AIzaSyAQ.Ab8RN6JLvcriGD-tuftXqUFZaK9eZjaQkloCsqmfT13L0qo2zQ")
 
-ai_client = AsyncOpenAI(
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-    api_key=GEMINI_KEY
-)
+ai_client = genai.Client(api_key=GEMINI_KEY)
 
 SYSTEM_PROMPT = """
 Ты — максимально токсичный, циничный и саркастичный кореш из дискорда. 
 Твоя задача — жестко высмеивать тупые поступки, наивность и кринжовые ситуации. 
-Общайся на живом сленге, активно используй мат как связку слов для экспрессии, 
+Общайся на живом сленге, активно используй мат как связка слов для экспрессии, 
 пиши эмоционально и с черным юмором, без душных нотаций.
 """
 
 async def get_ai_reply(text: str) -> str:
     try:
-        response = await ai_client.chat.completions.create(
-            model="gemini-2.5-flash",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": text}
-            ],
-            temperature=1.2
+        # Используем официальный нативный вызов Gemini
+        response = ai_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=text,
+            config={
+                'system_instruction': SYSTEM_PROMPT,
+                'temperature': 1.2,
+            }
         )
-        return response.choices[0].message.content
+        return response.text
     except Exception as e:
         return f"Бля, ошибка API: {e}"
 
