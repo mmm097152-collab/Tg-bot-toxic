@@ -18,8 +18,20 @@ SYSTEM_PROMPT = """
 
 async def get_ai_reply(text: str) -> str:
     try:
+        # Автоматически ищем любую доступную модель генерации текста на твоем ключе
+        available_models = []
+        for m in ai_client.models.list():
+            if "generateContent" in m.supported_generation_methods:
+                available_models.append(m.name)
+        
+        # Если нашли — берем первую попавшуюся рабочую
+        target_model = available_models[0] if available_models else 'gemini-1.5-flash'
+        # Убираем префикс models/, если он есть в названии
+        if target_model.startswith("models/"):
+            target_model = target_model.replace("models/", "")
+
         response = ai_client.models.generate_content(
-            model='gemini-3.8-flash',
+            model=target_model,
             contents=text,
             config={
                 'system_instruction': SYSTEM_PROMPT,
