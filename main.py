@@ -5,13 +5,13 @@ from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
 TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
-# Сюда вставишь свой ключ от DashScope (Qwen)
-QWEN_KEY = os.getenv("QWEN_KEY", "ТВОЙ_КЛЮЧ_QWEN")
+# Твой найденный ключ NIM
+NVIDIA_KEY = os.getenv("NVIDIA_KEY", "SxgaOnbaZhPdd1ODjMdwEBgEZgZCDa2h")
 
-# Инициализируем клиент Qwen через их эндпоинт
+# Клиент настроен на эндпоинт NVIDIA NIM
 client = OpenAI(
-    api_key=QWEN_KEY,
-    base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+    api_key=NVIDIA_KEY,
+    base_url="https://integrate.api.nvidia.com/v1"
 )
 
 SYSTEM_PROMPT = """
@@ -24,16 +24,18 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            model="qwen-max", # Или qwen-plus / qwen-turbo
+            # Модель из каталога NVIDIA NIM (например, Llama 3 или другая доступная)
+            model="meta/llama-3.1-70b-instruct",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
             ],
             temperature=1.2,
+            max_tokens=512,
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"Бля, ошибка Qwen API: {e}"
+        return f"Бля, ошибка NVIDIA NIM API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
