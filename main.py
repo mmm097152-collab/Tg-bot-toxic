@@ -5,7 +5,6 @@ from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
 TG_TOKEN = "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts"
-# Жестко зашиваем твой ключ сюда, чтобы избежать проблем с кодировкой в env
 NVIDIA_KEY = "SxgaOnbaZhPdd1ODjMdwEBgEZgZCDa2h"
 
 client = OpenAI(
@@ -23,7 +22,8 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            model="meta/llama-3.1-70b-instruct",
+            # Меняем на актуальную Llama 3.3
+            model="meta/llama-3.3-70b-instruct",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
@@ -33,7 +33,7 @@ async def get_ai_reply(text: str) -> str:
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"Бля, ошибка API: {e}"
+        return f"Бля, ошибка NVIDIA NIM API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
