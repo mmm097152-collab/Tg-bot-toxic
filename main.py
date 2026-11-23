@@ -22,7 +22,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = await ai_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-125b", # Или используем универсальный эндпоинт, либо заменим на актуальную
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
