@@ -5,11 +5,12 @@ from aiogram import Bot, Dispatcher, types, F
 from openai import OpenAI
 
 TG_TOKEN = "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts"
-NVIDIA_KEY = "SxgaOnbaZhPdd1ODjMdwEBgEZgZCDa2h"
+# Твой рабочий бесплатный ключ Groq
+GROQ_KEY = "Gsk_i6IjDwiJw3l2IuDXpEVHWGdyb3FYQNU834OHcRufvwoxqDPeZJqF"
 
 client = OpenAI(
-    api_key=NVIDIA_KEY,
-    base_url="https://integrate.api.nvidia.com/v1"
+    api_key=GROQ_KEY,
+    base_url="https://api.groq.com/openai/v1"
 )
 
 SYSTEM_PROMPT = """
@@ -22,8 +23,7 @@ SYSTEM_PROMPT = """
 async def get_ai_reply(text: str) -> str:
     try:
         response = client.chat.completions.create(
-            # Меняем на актуальную Llama 3.3
-            model="meta/llama-3.3-70b-instruct",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text}
@@ -33,7 +33,7 @@ async def get_ai_reply(text: str) -> str:
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"Бля, ошибка NVIDIA NIM API: {e}"
+        return f"Бля, ошибка Groq API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
