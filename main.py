@@ -2,16 +2,14 @@ import os
 import asyncio
 from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
-from openai import OpenAI
+from google import genai
+from google.genai import types as genai_types
 
 TG_TOKEN = os.getenv("TG_TOKEN", "9049213944:AAHrLRvniKXF_0bRjfo59GI0KUkt7U2B3ts")
-GROQ_KEY = os.getenv("GROQ_KEY", "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")
+GEMINI_KEY = "AQ.Ab8RN6JllKb09-qQSwClmWm1C0Tb87-VeJ3EY2MSYyYbb8zmOA"
 
-# Клиент настроен на Groq с полным префиксом модели
-client = OpenAI(
-    api_key=GROQ_KEY,
-    base_url="https://api.groq.com/openai/v1"
-)
+# Инициализируем официальный клиент Google GenAI
+client = genai.Client(api_key=GEMINI_KEY)
 
 SYSTEM_PROMPT = """
 Ты — максимально токсичный, циничный и саркастичный кореш из дискорда. 
@@ -22,18 +20,19 @@ SYSTEM_PROMPT = """
 
 async def get_ai_reply(text: str) -> str:
     try:
-        response = client.chat.completions.create(
-            model="qwen/qwen-3.8-27b",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": text}
-            ],
-            temperature=1.2,
-            max_tokens=512,
+        # Используем актуальную и быструю модель Gemini Flash
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=text,
+            config=genai_types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                temperature=1.2,
+                max_output_tokens=512,
+            )
         )
-        return response.choices[0].message.content
+        return response.text
     except Exception as e:
-        return f"Бля, ошибка Groq API: {e}"
+        return f"Бля, ошибка Gemini API: {e}"
 
 tg_bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
